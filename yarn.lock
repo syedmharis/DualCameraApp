@@ -2894,6 +2894,7 @@ __metadata:
     prettier: 2.8.8
     react: 18.3.1
     react-native: 0.75.3
+    react-native-camera: ^4.2.1
     react-test-renderer: 18.3.1
     typescript: 5.0.4
   languageName: unknown
@@ -7732,7 +7733,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.8.1":
+"prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -7808,6 +7809,15 @@ __metadata:
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 9d6d111d8990dc98bc5402c1266a808b0459b5d54830bbea24c12d908b536df7883f268a7868cfaedde3dd9d4e0d574db456f84d2e6df9c4526f99bb4b5344d8
+  languageName: node
+  linkType: hard
+
+"react-native-camera@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "react-native-camera@npm:4.2.1"
+  dependencies:
+    prop-types: ^15.6.2
+  checksum: 0e84ce657774694d1cc49395c43a8f2caabc03df36aa77aacfb5c797ad8cfe0368f4807deccc54e82ff2b193e8c2d1ce7ad504eedf7a9fc4719b38e39958a804
   languageName: node
   linkType: hard
 

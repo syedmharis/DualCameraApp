@@ -3,24 +3,30 @@ import UIKit
 import React
 
 @objc(DualCameraModule)
-class DualCameraModule: NSObject {
+class DualCameraModule: NSObject, RCTBridgeModule {
+    static func moduleName() -> String! {
+        return "DualCameraModule"
+    }
+    
+    static func requiresMainQueueSetup() -> Bool {
+        return true
+    }
+    
+    var bridge: RCTBridge!
+    
     private var multiCamSession: AVCaptureMultiCamSession?
     private var frontPreviewLayer: AVCaptureVideoPreviewLayer?
     private var backPreviewLayer: AVCaptureVideoPreviewLayer?
-    @objc var bridge: RCTBridge!
+    private var backCamera: AVCaptureDevice?
 
-    @objc static func requiresMainQueueSetup() -> Bool {
-        return true
+    @objc(initializeWithBridge:)
+    func initializeWithBridge(_ bridge: RCTBridge) {
+        self.bridge = bridge
     }
 
     override init() {
         super.init()
         setupMultiCamSession()
-    }
-
-    @objc(initializeWithBridge:)
-    func initializeWithBridge(_ bridge: RCTBridge) {
-        self.bridge = bridge
     }
     
     private func setupMultiCamSession() {
@@ -58,6 +64,7 @@ class DualCameraModule: NSObject {
                 print("Back camera not available")
                 return
             }
+            self.backCamera = backCamera
             let backInput = try AVCaptureDeviceInput(device: backCamera)
             if multiCamSession.canAddInput(backInput) {
                 multiCamSession.addInput(backInput)
@@ -118,6 +125,25 @@ class DualCameraModule: NSObject {
                 print("Back preview layer added to view with tag: \(backViewTag)")
             } else {
                 print("Error: Back view not found or bounds not set for tag: \(backViewTag)")
+            }
+        }
+    }
+  
+    @objc func setZoom(_ zoomFactor: Float) {
+        DispatchQueue.main.async {
+            do {
+                guard let backCamera = self.backCamera else {
+                    print("Back camera not available")
+                    return
+                }
+                try backCamera.lockForConfiguration()
+                let maxZoomFactor = backCamera.activeFormat.videoMaxZoomFactor
+                let clampedZoomFactor = min(max(CGFloat(zoomFactor), 1.0), maxZoomFactor)
+                backCamera.videoZoomFactor = clampedZoomFactor
+                backCamera.unlockForConfiguration()
+                print("Back camera zoom factor set to: \(clampedZoomFactor)")
+            } catch {
+                print("Error setting back camera zoom: \(error)")
             }
         }
     }
